@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ComposeProject</string>
+    <string name="switch_to_the_receiver_fragment">switch to the receiver fragment</string>
+    <string name="message_sender_fragment">Message sender fragment</string>
+    <string name="message_receiver_fragment">Message receiver fragment</string>
+    <string name="update_viewmodel_data">update ViewModel Data</string>
+</resources>
