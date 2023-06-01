@@ -3,26 +3,27 @@ package com.example.composeproject.viewModel
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 class SharedViewModel : ViewModel() {
 
-//    private var _currentMessage = MutableStateFlow("")
-//    val currentMessage = _currentMessage.asStateFlow()
-    var currentMessage = MutableStateFlow("")
+    private var _currentMessage = MutableStateFlow("")
+    val currentMessage = _currentMessage.asStateFlow()
+//    private var currentMessage = ""
 
-    private var _message = MutableStateFlow(currentMessage.value)
+    private var _message = MutableStateFlow("")
     val message = _message.asStateFlow()
 
-    fun setMessage(text: String) {
-        currentMessage.value = text
-//        _message.value = text
+    fun setFirstFragmentMessage(text: String) {
+        _currentMessage.value = text
+    }
+    fun setSecondFragmentMessage(text: String) {
+        _message.value = text
     }
 
-    fun sendMessage() {
+    fun sendMessageToSecondFragment() {
         _message.value = currentMessage.value
+    }
+    fun sendMessageToFirstFragment() {
+        _currentMessage.value = message.value
     }
 }

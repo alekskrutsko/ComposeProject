@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,20 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -69,7 +60,7 @@ fun NavigationView(viewModel: SharedViewModel) {
 
                 val navController = rememberNavController()
 
-                FirstScreen(navController = navController, viewModel = viewModel, Modifier)
+                FirstScreen(navController = navController, viewModel = viewModel, Modifier, Configuration.ORIENTATION_LANDSCAPE)
 
 
                 SecondScreen(viewModel = viewModel, Modifier)
@@ -85,7 +76,12 @@ fun NavigationView(viewModel: SharedViewModel) {
                 startDestination = "first_screen"
             ) {
                 composable("first_screen") {
-                    FirstScreen(navController, viewModel, Modifier.fillMaxSize())
+                    FirstScreen(
+                        navController,
+                        viewModel,
+                        Modifier.fillMaxSize(),
+                        Configuration.ORIENTATION_PORTRAIT
+                    )
                 }
                 composable("second_screen") {
                     SecondScreen(viewModel, Modifier.fillMaxSize())
@@ -97,7 +93,12 @@ fun NavigationView(viewModel: SharedViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FirstScreen(navController: NavController, viewModel: SharedViewModel, modifier: Modifier) {
+fun FirstScreen(
+    navController: NavController,
+    viewModel: SharedViewModel,
+    modifier: Modifier,
+    orientation: Int
+) {
     ConstraintLayout(
         modifier = modifier
     ) {
@@ -114,10 +115,9 @@ fun FirstScreen(navController: NavController, viewModel: SharedViewModel, modifi
         )
 
         val message = viewModel.currentMessage.collectAsState().value
-//        var message by remember { mutableStateOf("") }
         TextField(
             value = message,
-            onValueChange = viewModel::setMessage,
+            onValueChange = viewModel::setFirstFragmentMessage,
             modifier = Modifier.constrainAs(editText) {
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
@@ -127,8 +127,10 @@ fun FirstScreen(navController: NavController, viewModel: SharedViewModel, modifi
 
         Button(
             onClick = {
-                viewModel.sendMessage()
-                navController.navigate("second_screen")
+                viewModel.sendMessageToSecondFragment()
+                if(orientation != Configuration.ORIENTATION_LANDSCAPE ){
+                    navController.navigate("second_screen")
+                }
                       },
             modifier = Modifier.constrainAs(button) {
                 start.linkTo(parent.start)
@@ -136,7 +138,7 @@ fun FirstScreen(navController: NavController, viewModel: SharedViewModel, modifi
                 top.linkTo(editText.bottom, margin = 40.dp)
             }
         ) {
-            Text(text = stringResource(id = R.string.switch_to_the_receiver_fragment))
+            Text(text = stringResource(id = R.string.send_data_and_switch_to_the_receiver_fragment))
         }
     }
 }
@@ -162,7 +164,7 @@ fun SecondScreen(viewModel: SharedViewModel, modifier: Modifier) {
         val message = viewModel.message.collectAsState().value
         TextField(
             value = message,
-            onValueChange = viewModel::setMessage,
+            onValueChange = viewModel::setSecondFragmentMessage,
             modifier = Modifier.constrainAs(editText) {
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
@@ -170,24 +172,17 @@ fun SecondScreen(viewModel: SharedViewModel, modifier: Modifier) {
             }
         )
 
-//        Button(
-//            onClick = {
-//                      },
-//            modifier = Modifier.constrainAs(button) {
-//                start.linkTo(parent.start)
-//                end.linkTo(parent.end)
-//                top.linkTo(editText.bottom, margin = 40.dp)
-//            }
-//        ) {
-//            Text(text = stringResource(id = R.string.update_viewmodel_data))
-//        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ComposeProjectTheme {
-//        SecondScreen(rememberNavController(), viewModel)
+        Button(
+            onClick = {
+                      viewModel.sendMessageToFirstFragment()
+                      },
+            modifier = Modifier.constrainAs(button) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(editText.bottom, margin = 40.dp)
+            }
+        ) {
+            Text(text = stringResource(id = R.string.update_first_fragment_data))
+        }
     }
 }
