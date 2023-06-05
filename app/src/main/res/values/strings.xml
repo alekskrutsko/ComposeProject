@@ -3,5 +3,5 @@
     <string name="send_data_and_switch_to_the_receiver_fragment">send data and switch to the receiver fragment</string>
     <string name="message_sender_fragment">Message sender fragment</string>
     <string name="message_receiver_fragment">Message receiver fragment</string>
-    <string name="update_first_fragment_data">update sender fragment data</string>
+    <string name="send_data_and_switch_to_the_sender_fragment">send data and switch to the sender fragment</string>
 </resources>

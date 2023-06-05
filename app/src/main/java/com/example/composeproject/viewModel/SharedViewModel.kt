@@ -8,10 +8,11 @@ class SharedViewModel : ViewModel() {
 
     private var _currentMessage = MutableStateFlow("")
     val currentMessage = _currentMessage.asStateFlow()
-//    private var currentMessage = ""
 
     private var _message = MutableStateFlow("")
     val message = _message.asStateFlow()
+
+    var firstFragmentFocus = true
 
     fun setFirstFragmentMessage(text: String) {
         _currentMessage.value = text
